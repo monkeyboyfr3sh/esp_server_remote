@@ -13,7 +13,11 @@
     "esp_err.h": "c",
     "system_internal.h": "c",
     "esp_task_wdt.h": "c",
-    "random": "c"
+    "random": "c",
+    "rtc_io.h": "c",
+    "argtable3.h": "c",
+    "cmd_decl.h": "c",
+    "cmd_system.h": "c"
   },
   "idf.portWin": "COM4",
   "idf.adapterTargetName": "esp32"

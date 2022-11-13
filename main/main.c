@@ -52,6 +52,8 @@
 #include "lwip/err.h"
 #include "lwip/sys.h"
 
+#include "ssh.h"
+
 #ifdef CONFIG_ESP_CONSOLE_USB_CDC
 #error This example is incompatible with USB CDC console. Please try "console_usb" example instead.
 #endif // CONFIG_ESP_CONSOLE_USB_CDC
@@ -175,9 +177,6 @@ static EventGroupHandle_t s_wifi_event_group;
 
 static int s_retry_num = 0;
 
-EventGroupHandle_t xEventGroup;
-int TASK_FINISH_BIT	= BIT4;
-
 static void event_handler(void* arg, esp_event_base_t event_base,
 								int32_t event_id, void* event_data)
 {
@@ -283,60 +282,6 @@ void wifi_init_sta(void)
 	vEventGroupDelete(s_wifi_event_group);
 }
 
-void ssh_task(void *pvParameters);
-
-#define WDT_PERIOD_TICKS	100
-#define CHAR_PRINT_LOW		32
-#define CHAR_PRINT_HIGH		126
-#define CHAR_BS				8
-#define CHAR_SPACE			32
-#define CHAR_ENTER			10
-
-esp_err_t get_command(char* buff, int buff_len)
-{
-	TickType_t WDT_timestamp = xTaskGetTickCount();
-	int char_count = 0;
-	char c;
-
-	printf("Enter command: ");
-
-	// Go into busy loop for capturing the command
-	do{
-		// WDT reset
-		if(xTaskGetTickCount()-WDT_timestamp > WDT_PERIOD_TICKS ){ 
-			WDT_timestamp = xTaskGetTickCount();
-			vTaskDelay(1); 
-		}
-
-		// Get the character, print if valid
-		c = fgetc(stdin);
-		
-		// New character to capture
-		if( (CHAR_PRINT_LOW <= c) && (c <= CHAR_PRINT_HIGH) && ( (char_count-1) < buff_len ) ){
-			fputc(c,stdout);
-			buff[char_count] = c;
-			char_count++;
-		}
-		// Detect back space
-		else if( c == CHAR_BS && ( char_count ) ){
-			char_count--;
-			fputc(CHAR_BS,stdout);
-			fputc(CHAR_SPACE,stdout);
-			fputc(CHAR_BS,stdout);	
-		}
-		// Detect enter key 
-		else if( c == CHAR_ENTER ){
-			printf("\r\n");
-			break;
-		}
-
-	} while(1);
-
-	buff[char_count] = 0;
-
-	return ESP_OK;
-}
-
 void app_main(void)
 {
     initialize_nvs();
@@ -351,16 +296,12 @@ void app_main(void)
 	ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
 	wifi_init_sta();
 
-	// Create Eventgroup
-	xEventGroup = xEventGroupCreate();
-	configASSERT( xEventGroup );
-
     initialize_console();
 
-#if(1)
     /* Register commands */
     esp_console_register_help_command();
     register_system();
+    register_ssh();
 
     /* Prompt to be printed before each line.
      * This can be customized, made dynamic, etc.
@@ -426,50 +367,4 @@ void app_main(void)
 
     ESP_LOGE(TAG, "Error or end-of-input, terminating console");
     esp_console_deinit();
-
-#else
-	// int num_commands = 3;
-	// char *commands[] = {
-	// 	"qm list",
-	// 	"qm start 103",
-	// 	"qm list",
-	// };
-	// ESP_LOGI(TAG,"Num commands: %d",num_commands);
-
-	// for(int i = 0;i<num_commands;i++)
-	// {
-	// 	// Execute ssh command
-	// 	xEventGroupClearBits( xEventGroup, TASK_FINISH_BIT );
-	// 	xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) commands[i], 2, NULL);
-
-	// 	// Wit for ssh finish.
-	// 	xEventGroupWaitBits( xEventGroup,
-	// 		TASK_FINISH_BIT,	/* The bits within the event group to wait for. */
-	// 		pdTRUE,				/* HTTP_CLOSE_BIT should be cleared before returning. */
-	// 		pdFALSE,			/* Don't wait for both bits, either bit will do. */
-	// 		portMAX_DELAY);		/* Wait forever. */	
-	// }
-
-	char buff[1024];
-	while(1){
-		
-		// Get the command
-		esp_err_t err = get_command(buff,1024);
-		if (err != ESP_OK){
-			ESP_LOGE(TAG,"Error: %s",esp_err_to_name(err));
-		}
-
-		// Execute ssh command
-		xEventGroupClearBits( xEventGroup, TASK_FINISH_BIT );
-		xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) buff, 2, NULL);
-
-		// Wit for ssh finish.
-		xEventGroupWaitBits( xEventGroup,
-			TASK_FINISH_BIT,	/* The bits within the event group to wait for. */
-			pdTRUE,				/* HTTP_CLOSE_BIT should be cleared before returning. */
-			pdFALSE,			/* Don't wait for both bits, either bit will do. */
-			portMAX_DELAY);		/* Wait forever. */	
-	}
-	ESP_LOGI(TAG, "SSH all finish");
-#endif
 }

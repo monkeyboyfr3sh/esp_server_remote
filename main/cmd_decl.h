@@ -13,6 +13,7 @@ extern "C" {
 #endif
 
 #include "cmd_system.h"
+#include "cmd_ssh.h"
 
 #ifdef __cplusplus
 }

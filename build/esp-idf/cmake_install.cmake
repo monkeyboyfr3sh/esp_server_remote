@@ -122,8 +122,9 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/ulp/cmake_install.cmake")
   include("C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/wifi_provisioning/cmake_install.cmake")
   include("C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/main/cmake_install.cmake")
-  include("C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/cmd_system/cmake_install.cmake")
   include("C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/libssh2/cmake_install.cmake")
+  include("C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/ssh/cmake_install.cmake")
+  include("C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/cmd_system/cmake_install.cmake")
 
 endif()
 
