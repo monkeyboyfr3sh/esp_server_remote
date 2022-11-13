@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/david/Documents/GitHub/esp-idf-ssh-client/components/libssh2
+# Install script for directory: C:/Users/david/Documents/GitHub/esp_server_remote/components/libssh2
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

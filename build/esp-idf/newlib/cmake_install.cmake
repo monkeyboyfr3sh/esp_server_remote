@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/david/Documents/GitHub/esp-idf-ssh-client/build/esp-idf/newlib/port/cmake_install.cmake")
+  include("C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/newlib/port/cmake_install.cmake")
 
 endif()
 

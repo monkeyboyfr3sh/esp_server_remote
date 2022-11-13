@@ -1,4 +1,4 @@
-/* * Data converted from C:/Users/david/Documents/GitHub/esp-idf-ssh-client/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded

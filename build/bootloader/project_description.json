@@ -1,8 +1,8 @@
 {
     "project_name":       "bootloader",
     "project_path":       "C:/Users/david/esp/esp-idf/components/bootloader/subproject",
-    "build_dir":          "C:/Users/david/Documents/GitHub/esp-idf-ssh-client/build/bootloader",
-    "config_file":        "C:/Users/david/Documents/GitHub/esp-idf-ssh-client/sdkconfig",
+    "build_dir":          "C:/Users/david/Documents/GitHub/esp_server_remote/build/bootloader",
+    "config_file":        "C:/Users/david/Documents/GitHub/esp_server_remote/sdkconfig",
     "config_defaults":    "",
     "app_elf":            "bootloader.elf",
     "app_bin":            "bootloader.bin",
