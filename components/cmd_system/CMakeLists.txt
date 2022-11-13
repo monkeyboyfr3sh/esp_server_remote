@@ -1,3 +1,3 @@
-idf_component_register(SRCS "cmd_system.c" "cmd_ssh.c"
+idf_component_register(SRCS "cmd_system.c"
                     INCLUDE_DIRS .
-                    REQUIRES console spi_flash ssh)
+                    REQUIRES console spi_flash)

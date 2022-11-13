@@ -17,7 +17,9 @@
     "rtc_io.h": "c",
     "argtable3.h": "c",
     "cmd_decl.h": "c",
-    "cmd_system.h": "c"
+    "cmd_system.h": "c",
+    "condition_variable": "c",
+    "future": "c"
   },
   "idf.portWin": "COM4",
   "idf.adapterTargetName": "esp32"
