@@ -1,0 +1,20 @@
+{
+  "C_Cpp.intelliSenseEngine": "Tag Parser",
+  "files.associations": {
+    "*.txt": "cmake",
+    "sdkconfig.h": "c",
+    "src2.h": "c",
+    "*.inc": "c",
+    "freertos.h": "c",
+    "example.h": "c",
+    "esp_system.h": "c",
+    "*.ipp": "c",
+    "esp_spi_flash.h": "c",
+    "esp_err.h": "c",
+    "system_internal.h": "c",
+    "esp_task_wdt.h": "c",
+    "random": "c"
+  },
+  "idf.portWin": "COM4",
+  "idf.adapterTargetName": "esp32"
+}
