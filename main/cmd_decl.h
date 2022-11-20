@@ -14,6 +14,7 @@ extern "C" {
 
 #include "cmd_system.h"
 #include "cmd_ssh.h"
+#include "cmd_periph.h"
 
 #ifdef __cplusplus
 }

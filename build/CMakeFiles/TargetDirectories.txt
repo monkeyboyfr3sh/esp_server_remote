@@ -14,11 +14,8 @@ C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/size-files.di
 C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/size-components.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/uf2-app.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/uf2.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/spiffs_storage_bin.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/rebuild_cache.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/storage-flash.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/encrypted-storage-flash.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/edit_cache.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/rebuild_cache.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/list_install_components.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/install/local.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/CMakeFiles/install.dir
@@ -700,3 +697,10 @@ C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/ssh/CMakeFiles/i
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/ssh/CMakeFiles/edit_cache.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/ssh/CMakeFiles/rebuild_cache.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/ssh/CMakeFiles/list_install_components.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/__idf_periph.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/install/local.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/install.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/edit_cache.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/rebuild_cache.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/list_install_components.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/install/strip.dir

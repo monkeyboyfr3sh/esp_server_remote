@@ -14,6 +14,7 @@
 #include "esp_log.h"
 #include "esp_console.h"
 #include "esp_system.h"
+#include "esp_err.h"
 #include "driver/uart.h"
 #include "argtable3/argtable3.h"
 #include "freertos/FreeRTOS.h"
@@ -22,10 +23,11 @@
 #include "sdkconfig.h"
 #include "ssh.h"
 
-static const char *TAG = "cmd_system";
+static const char *TAG = "cmd_ssh";
 
 EventGroupHandle_t xEventGroup;
 int TASK_FINISH_BIT	= BIT4;
+#define SSH_MIN_ARGS    3
 
 static void register_ssh_start(void);
 static void register_ssh_command_task(void);
@@ -77,11 +79,46 @@ static int ssh_command_task_start(int argc, char **argv)
 	xEventGroup = xEventGroupCreate();
 	configASSERT( xEventGroup );
 
-    char * buff = "qm list";
+    // Dump the args for debug
+    printf("[");
+    for(int i = 0;i<argc;i++){ printf("%s, ",argv[i]); }
+    printf("]\r\n");
+
+    // We should have some number of arguments
+    int num_inputs = argc-1;
+    if(num_inputs<SSH_MIN_ARGS){
+        ESP_LOGE(TAG,"Not enough args. Min is %d",SSH_MIN_ARGS);
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    // Get the arguments and check them
+    char *username = argv[1];
+    char *host = argv[2];
+    char *command = argv[3];
+    if( (username==NULL) || (host==NULL) || (command==NULL) ){
+        ESP_LOGE(TAG,"Error with argument.");
+        return ESP_ERR_INVALID_ARG;
+    }
+
+    // Put them into the input struct
+    ssh_cmd_input_t ssh_command;
+    ssh_command.username = username;
+    ssh_command.host = host;
+    ssh_command.command = command;
+    ssh_command.password = NULL;
+
+    // Now check for options
+    for(int i = SSH_MIN_ARGS+1;i<argc;i++){
+        if( ( !strncmp(argv[i],"-p",1024) || ( !strncmp(argv[i],"-P",1024))) && 
+            ( i+1 < argc )
+        ){
+            ssh_command.password = argv[i+1];
+        }
+    }
 
     // Execute ssh command
     xEventGroupClearBits( xEventGroup, TASK_FINISH_BIT );
-    xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) buff, 2, NULL);
+    xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
 
     // Wit for ssh finish.
     xEventGroupWaitBits( xEventGroup,
