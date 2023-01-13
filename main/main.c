@@ -37,6 +37,7 @@
 #include "ssh.h"
 #include "terminal.h"
 #include "periph.h"
+#include "button_handler.h"
 
 static const char* TAG = "main";
 

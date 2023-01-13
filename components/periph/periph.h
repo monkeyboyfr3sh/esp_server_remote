@@ -4,11 +4,19 @@
 extern "C" {
 #endif
 
-#define COMMAND_MAX_SIZE	1024
-#define NUM_COMMANDS		20
-#define NUM_BUTTONS         5
+#include "freertos/queue.h"
+#include "driver/gpio.h"
 
-void gpio_task_example(void* arg);
+#define ESP_INTR_FLAG_DEFAULT 0
+#define BUTTON_1_PIN	17
+#define BUTTON_2_PIN	5
+#define BUTTON_3_PIN	18
+#define BUTTON_4_PIN	19
+#define BUTTON_5_PIN	16
+
+extern QueueHandle_t gpio_evt_queue;
+
+void setup_gpio(void);
 
 #ifdef __cplusplus
 }

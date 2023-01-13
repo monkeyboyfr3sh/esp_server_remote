@@ -160,6 +160,7 @@ void terminal_task(void *pvParameters)
     register_system();
     register_ssh();
     register_periph();
+    register_button_handler();
 
     /* Prompt to be printed before each line.
      * This can be customized, made dynamic, etc.
