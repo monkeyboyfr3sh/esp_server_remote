@@ -27,6 +27,8 @@
         "vector": "c",
         "string_view": "c",
         "initializer_list": "c",
-        "regex": "c"
+        "regex": "c",
+        "linenoise.h": "c",
+        "errno.h": "c"
     }
 }
