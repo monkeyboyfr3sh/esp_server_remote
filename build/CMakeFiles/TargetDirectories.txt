@@ -676,6 +676,13 @@ C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/main/CMakeFiles/
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/main/CMakeFiles/rebuild_cache.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/main/CMakeFiles/list_install_components.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/main/CMakeFiles/install/strip.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/__idf_periph.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/install/local.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/install.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/edit_cache.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/rebuild_cache.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/list_install_components.dir
+C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/install/strip.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/libssh2/CMakeFiles/__idf_libssh2.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/libssh2/CMakeFiles/install/local.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/libssh2/CMakeFiles/install.dir
@@ -690,13 +697,6 @@ C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/ssh/CMakeFiles/i
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/ssh/CMakeFiles/edit_cache.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/ssh/CMakeFiles/rebuild_cache.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/ssh/CMakeFiles/list_install_components.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/__idf_periph.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/install/local.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/install.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/edit_cache.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/rebuild_cache.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/list_install_components.dir
-C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/periph/CMakeFiles/install/strip.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/button_handler/CMakeFiles/__idf_button_handler.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/button_handler/CMakeFiles/install/local.dir
 C:/Users/david/Documents/GitHub/esp_server_remote/build/esp-idf/button_handler/CMakeFiles/install.dir

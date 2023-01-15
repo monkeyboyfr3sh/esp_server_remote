@@ -1,3 +1,5 @@
-idf_component_register(SRCS "cmd_periph.c" "periph.c"
-                    INCLUDE_DIRS .
-                    REQUIRES driver ssh)
+idf_component_register(SRCS "src/button_gpio.c" "src/periph.c" 
+                            "cmd/cmd_periph.c"
+                    INCLUDE_DIRS . "./inc/" "./cmd/"
+                    PRIV_REQUIRES driver console
+                    REQUIRES )
