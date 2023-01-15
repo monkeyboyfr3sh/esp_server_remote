@@ -1,11 +1,3 @@
-/* ssh Client Example
-
-	 This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-	 Unless required by applicable law or agreed to in writing, this
-	 software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-	 CONDITIONS OF ANY KIND, either express or implied.
-*/
 #include <string.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -17,7 +9,6 @@
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
 #include "esp_log.h"
-#include "periph.h"
 
 #include "freertos/queue.h"
 #include "driver/gpio.h"
@@ -25,6 +16,7 @@
 #include "ssh.h"
 #include "button_handler.h"
 #include "periph.h"
+#include "button_gpio.h"
 
 static const char *TAG = "BTN-HANDLER";
 

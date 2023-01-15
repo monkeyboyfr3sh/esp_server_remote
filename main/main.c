@@ -17,7 +17,6 @@
 
 #include "ssh.h"
 #include "terminal.h"
-#include "periph.h"
 #include "button_handler.h"
 #include "connect.h"
 

@@ -35,6 +35,14 @@
         "errno.h": "c",
         "freertos.h": "c",
         "task.h": "c",
-        "periph.h": "c"
+        "periph.h": "c",
+        "button_handler.h": "c",
+        "queue.h": "c",
+        "cmd_periph.h": "c",
+        "gpio.h": "c",
+        "ctype.h": "c",
+        "cmd_ssh.h": "c",
+        "cmd_nvs.h": "c",
+        "esp_log.h": "c"
     }
 }

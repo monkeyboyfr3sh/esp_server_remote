@@ -12,7 +12,9 @@
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
 #include "sdkconfig.h"
+
 #include "periph.h"
+#include "button_gpio.h"
 
 static const char *TAG = "cmd_periph";
 

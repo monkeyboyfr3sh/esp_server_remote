@@ -116,7 +116,7 @@ static void register_restart(void)
 
 static int clear_terminal(int argc, char **argv)
 {
-    printf("\e[2JH");
+    printf("\e[2J\e[H");
     return 0;
 }
 
