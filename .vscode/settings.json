@@ -35,14 +35,17 @@
         "errno.h": "c",
         "freertos.h": "c",
         "task.h": "c",
-        "periph.h": "c",
-        "button_handler.h": "c",
+        "periph_shared.h": "c",
+        "button_handler_shared.h": "c",
         "queue.h": "c",
         "cmd_periph.h": "c",
         "gpio.h": "c",
         "ctype.h": "c",
         "cmd_ssh.h": "c",
         "cmd_nvs.h": "c",
-        "esp_log.h": "c"
+        "esp_log.h": "c",
+        "button_pad_handler.h": "c",
+        "complex": "c",
+        "gpio_example_handler.h": "c"
     }
 }

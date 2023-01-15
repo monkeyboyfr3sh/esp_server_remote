@@ -15,10 +15,11 @@
 #include "esp_err.h"
 #include "esp_log.h"
 
-#include "ssh.h"
-#include "terminal.h"
-#include "button_handler.h"
 #include "connect.h"
+
+#include "terminal.h"
+#include "button_pad_handler.h"
+#include "gpio_example_handler.h"
 
 static const char* TAG = "main";
 

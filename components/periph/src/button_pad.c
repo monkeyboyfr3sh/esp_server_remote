@@ -12,7 +12,7 @@
 #include "freertos/event_groups.h"
 #include "esp_log.h"
 #include "esp_err.h"
-#include "periph.h"
+#include "periph_shared.h"
 
 #include "freertos/queue.h"
 #include "driver/gpio.h"

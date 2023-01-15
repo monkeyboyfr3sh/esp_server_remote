@@ -13,7 +13,7 @@
 #include "freertos/event_groups.h"
 #include "sdkconfig.h"
 
-#include "periph.h"
+#include "periph_shared.h"
 #include "button_pad.h"
 
 static const char *TAG = "cmd_periph";

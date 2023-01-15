@@ -12,7 +12,8 @@
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
 #include "sdkconfig.h"
-#include "button_handler.h"
+#include "button_handler_shared.h"
+#include "gpio_example_handler.h"
 
 static const char *TAG = "cmd_btn";
 
