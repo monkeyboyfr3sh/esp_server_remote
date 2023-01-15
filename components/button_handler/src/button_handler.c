@@ -16,7 +16,7 @@
 #include "ssh.h"
 #include "button_handler.h"
 #include "periph.h"
-#include "button_gpio.h"
+#include "button_pad.h"
 
 static const char *TAG = "BTN-HANDLER";
 
@@ -191,10 +191,10 @@ void gpio_task_example(void* arg)
     }
 }
 
-void fancy_button_task(void* arg)
+void button_pad_task(void* arg)
 {
 	ESP_LOGI(TAG,"Fancy button enters!");
-	setup_fancy_button();
+	setup_button_pad();
 
 	const TickType_t button_tick_goal = pdMS_TO_TICKS(INTERRUPT_MIN_PERIOD_MS);
 	TickType_t button_1_timestamp = 0;
@@ -205,20 +205,20 @@ void fancy_button_task(void* arg)
 
 	// while(1)
 	// {
-	// 	uint8_t btn3 = gpio_get_level(FANCY_BUTTON_3_PIN);
-	// 	uint8_t btn4 = gpio_get_level(FANCY_BUTTON_4_PIN);
-	// 	uint8_t btn5 = gpio_get_level(FANCY_BUTTON_5_PIN);
+	// 	uint8_t btn3 = gpio_get_level(BUTTON_PAD_3_PIN);
+	// 	uint8_t btn4 = gpio_get_level(BUTTON_PAD_4_PIN);
+	// 	uint8_t btn5 = gpio_get_level(BUTTON_PAD_5_PIN);
 	// 	ESP_LOGI(TAG,"%d %d %d",btn3,btn4,btn5);
 	// 	vTaskDelay(pdMS_TO_TICKS(200));
 	// }
 
     uint32_t io_num;
     for(;;) {
-        if(xQueueReceive(fancy_evt_queue, &io_num, portMAX_DELAY)) {
+        if(xQueueReceive(button_pad_evt_queue, &io_num, portMAX_DELAY)) {
 
 			switch (io_num)
 			{
-			case FANCY_BUTTON_3_PIN:
+			case BUTTON_PAD_3_PIN:
 				if( (xTaskGetTickCount()-button_3_timestamp) > button_tick_goal )
 				{
 					button_3_timestamp = xTaskGetTickCount();
@@ -227,7 +227,7 @@ void fancy_button_task(void* arg)
 					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
 				}
 				break;
-			case FANCY_BUTTON_4_PIN:
+			case BUTTON_PAD_4_PIN:
 				if( (xTaskGetTickCount()-button_4_timestamp) > button_tick_goal )
 				{
 					button_4_timestamp = xTaskGetTickCount();
@@ -236,7 +236,7 @@ void fancy_button_task(void* arg)
 					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
 				}
 				break;
-			case FANCY_BUTTON_5_PIN:
+			case BUTTON_PAD_5_PIN:
 				if( (xTaskGetTickCount()-button_5_timestamp) > button_tick_goal )
 				{
 					button_5_timestamp = xTaskGetTickCount();

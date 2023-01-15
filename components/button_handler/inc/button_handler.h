@@ -11,7 +11,7 @@ extern "C" {
 #define NUM_BUTTONS         5
 
 void gpio_task_example(void* arg);
-void fancy_button_task(void* arg);
+void button_pad_task(void* arg);
 
 #ifdef __cplusplus
 }

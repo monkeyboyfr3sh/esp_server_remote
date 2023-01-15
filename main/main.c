@@ -31,7 +31,7 @@ void app_main(void)
 
     xTaskCreate(terminal_task, "terminal_thread", 4096, NULL, 5, NULL);
     // xTaskCreate(gpio_task_example, "gpio_thread", 4096, NULL, 5, NULL);
-    xTaskCreate(fancy_button_task, "fancy_button_thread", 4096, NULL, 5, NULL);
+    xTaskCreate(button_pad_task, "button_pad_thread", 4096, NULL, 5, NULL);
 
 	// Main exit
 	ESP_LOGI(TAG,"Main thread exit");
