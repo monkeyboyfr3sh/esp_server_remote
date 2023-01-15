@@ -78,6 +78,7 @@ void print_command(ssh_cmd_input_t *ssh_commnad)
 
 void ssh_command_task(void *pvParameters)
 {
+	vTaskDelete(NULL);
 	ssh_cmd_input_t *ssh_commnad = (ssh_cmd_input_t*)pvParameters;
 	char *task_parameter = ssh_commnad->command;
 	char *password = CONFIG_SSH_PASSWORD;

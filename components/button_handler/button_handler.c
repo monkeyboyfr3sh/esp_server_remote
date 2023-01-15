@@ -26,15 +26,18 @@
 #include "button_handler.h"
 #include "periph.h"
 
-static const char *TAG = "HW";
+static const char *TAG = "BTN-HANDLER";
 
 char *button_cmd_list[NUM_COMMANDS];
 int button_cmd_lut[NUM_BUTTONS];
+
+#define DEBUG_COMMAND_1 "qm list"
 
 static void set_default_commands(void)
 {
 	// Default commands to set
 	char * default_commands[NUM_COMMANDS] = {
+		"qm list",
 		// 101
 		"qm start 101",
 		"qm stop 101",
@@ -72,6 +75,8 @@ static void set_default_commands(void)
 		button_cmd_lut[i] = default_LUT_values[i];
 	}
 }
+
+
 
 void gpio_task_example(void* arg)
 {
@@ -192,4 +197,72 @@ void gpio_task_example(void* arg)
 
 		vTaskDelay(1);
     }
+}
+
+void fancy_button_task(void* arg)
+{
+	ESP_LOGI(TAG,"Fancy button enters!");
+	setup_fancy_button();
+
+	const TickType_t button_tick_goal = pdMS_TO_TICKS(INTERRUPT_MIN_PERIOD_MS);
+	TickType_t button_1_timestamp = 0;
+	TickType_t button_2_timestamp = 0;
+	TickType_t button_3_timestamp = 0;
+	TickType_t button_4_timestamp = 0;
+	TickType_t button_5_timestamp = 0;
+
+	// while(1)
+	// {
+	// 	uint8_t btn3 = gpio_get_level(FANCY_BUTTON_3_PIN);
+	// 	uint8_t btn4 = gpio_get_level(FANCY_BUTTON_4_PIN);
+	// 	uint8_t btn5 = gpio_get_level(FANCY_BUTTON_5_PIN);
+	// 	ESP_LOGI(TAG,"%d %d %d",btn3,btn4,btn5);
+	// 	vTaskDelay(pdMS_TO_TICKS(200));
+	// }
+
+    uint32_t io_num;
+    for(;;) {
+        if(xQueueReceive(fancy_evt_queue, &io_num, portMAX_DELAY)) {
+
+			switch (io_num)
+			{
+			case FANCY_BUTTON_3_PIN:
+				if( (xTaskGetTickCount()-button_3_timestamp) > button_tick_goal )
+				{
+					button_3_timestamp = xTaskGetTickCount();
+					ESP_LOGI(TAG,"Interrupt from Button 3!");
+				
+					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+				}
+				break;
+			case FANCY_BUTTON_4_PIN:
+				if( (xTaskGetTickCount()-button_4_timestamp) > button_tick_goal )
+				{
+					button_4_timestamp = xTaskGetTickCount();
+					ESP_LOGI(TAG,"Interrupt from Button 4!");
+				
+					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+				}
+				break;
+			case FANCY_BUTTON_5_PIN:
+				if( (xTaskGetTickCount()-button_5_timestamp) > button_tick_goal )
+				{
+					button_5_timestamp = xTaskGetTickCount();
+					ESP_LOGI(TAG,"Interrupt from Button 5!");
+				
+					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+				}
+				break;
+			
+			default:
+				ESP_LOGW(TAG,"err, PIN: %d",io_num);
+				break;
+			}
+        }
+
+		vTaskDelay(1);
+    }
+
+	ESP_LOGI(TAG,"Fancy button exits!");
+	vTaskDelete(NULL);
 }

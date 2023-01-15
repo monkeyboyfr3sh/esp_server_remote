@@ -36,7 +36,6 @@ static void register_version(void);
 static void register_restart(void);
 static void register_deep_sleep(void);
 static void register_light_sleep(void);
-static void register_clear(void);
 #if WITH_TASKS_INFO
 static void register_tasks(void);
 #endif
@@ -45,7 +44,6 @@ void register_system_common(void)
 {
     register_free();
     register_heap();
-    register_clear();
     register_version();
     register_restart();
 #if WITH_TASKS_INFO
@@ -150,25 +148,6 @@ static void register_heap(void)
         .func = &heap_size,
     };
     ESP_ERROR_CHECK( esp_console_cmd_register(&heap_cmd) );
-
-}
-
-/* 'clear' command clears terminal screen */
-static int clear(int argc, char **argv)
-{
-    printf("\e[2J\e[H");
-    return 0;
-}
-
-static void register_clear(void)
-{
-    const esp_console_cmd_t clear_cmd = {
-        .command = "clear",
-        .help = "Clears terminal screen",
-        .hint = NULL,
-        .func = &clear,
-    };
-    ESP_ERROR_CHECK( esp_console_cmd_register(&clear_cmd) );
 
 }
 

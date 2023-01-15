@@ -12,12 +12,8 @@
 extern "C" {
 #endif
 
-#include "cmd_system.h"
-#include "cmd_wifi.h"
-#include "cmd_nvs.h"
-#include "cmd_ssh.h"
-#include "cmd_periph.h"
-#include "cmd_button_handler.h"
+// Register NVS functions
+void register_nvs(void);
 
 #ifdef __cplusplus
 }
