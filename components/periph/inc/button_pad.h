@@ -17,7 +17,7 @@ extern "C" {
 
 extern QueueHandle_t button_pad_evt_queue;
 
-void setup_button_pad(void);
+esp_err_t setup_button_pad(void);
 esp_err_t fancy_evt_queue_push(uint32_t item);
 
 #ifdef __cplusplus

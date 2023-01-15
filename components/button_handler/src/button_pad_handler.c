@@ -21,10 +21,23 @@
 
 static const char *TAG = "BTN-PAD-H";
 
+static void button_pad_exit(void)
+{
+	ESP_LOGI(TAG,"Exiting!");
+	vTaskDelete(NULL);
+}
+
 void button_pad_task(void* arg)
 {
-	ESP_LOGI(TAG,"Fancy button enters!");
-	setup_button_pad();
+	ESP_LOGI(TAG,"Button pad enters!");
+	
+	// Setup button pad
+	esp_err_t ret = setup_button_pad();
+	ESP_LOGI(TAG,"Button pad setup status: '%s'",esp_err_to_name(ret));
+	if( ret!=ESP_OK ) {
+		ESP_LOGE(TAG,"Failed to init button pad");
+		button_pad_exit();
+	}
 
 	const TickType_t button_tick_goal = pdMS_TO_TICKS(INTERRUPT_MIN_PERIOD_MS);
 	TickType_t button_1_timestamp = 0;
@@ -33,20 +46,11 @@ void button_pad_task(void* arg)
 	TickType_t button_4_timestamp = 0;
 	TickType_t button_5_timestamp = 0;
 
-	// while(1)
-	// {
-	// 	uint8_t btn3 = gpio_get_level(BUTTON_PAD_3_PIN);
-	// 	uint8_t btn4 = gpio_get_level(BUTTON_PAD_4_PIN);
-	// 	uint8_t btn5 = gpio_get_level(BUTTON_PAD_5_PIN);
-	// 	ESP_LOGI(TAG,"%d %d %d",btn3,btn4,btn5);
-	// 	vTaskDelay(pdMS_TO_TICKS(200));
-	// }
-
-    uint32_t io_num;
+    dio_evt_t dio_evt;
     for(;;) {
-        if(xQueueReceive(button_pad_evt_queue, &io_num, portMAX_DELAY)) {
+        if(xQueueReceive(button_pad_evt_queue, &dio_evt, portMAX_DELAY)) {
 
-			switch (io_num)
+			switch (dio_evt.event_pin)
 			{
 			case BUTTON_PAD_3_PIN:
 				if( (xTaskGetTickCount()-button_3_timestamp) > button_tick_goal )
@@ -54,7 +58,7 @@ void button_pad_task(void* arg)
 					button_3_timestamp = xTaskGetTickCount();
 					ESP_LOGI(TAG,"Interrupt from Button 3!");
 				
-					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+					// DO CODE
 				}
 				break;
 			case BUTTON_PAD_4_PIN:
@@ -63,7 +67,7 @@ void button_pad_task(void* arg)
 					button_4_timestamp = xTaskGetTickCount();
 					ESP_LOGI(TAG,"Interrupt from Button 4!");
 				
-					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+					// DO CODE
 				}
 				break;
 			case BUTTON_PAD_5_PIN:
@@ -72,12 +76,12 @@ void button_pad_task(void* arg)
 					button_5_timestamp = xTaskGetTickCount();
 					ESP_LOGI(TAG,"Interrupt from Button 5!");
 				
-					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+					// DO CODE
 				}
 				break;
 			
 			default:
-				ESP_LOGW(TAG,"err, PIN: %d",io_num);
+				ESP_LOGW(TAG,"err, PIN: %d",dio_evt.event_pin);
 				break;
 			}
         }
@@ -85,6 +89,5 @@ void button_pad_task(void* arg)
 		vTaskDelay(1);
     }
 
-	ESP_LOGI(TAG,"Fancy button exits!");
-	vTaskDelete(NULL);
+	button_pad_exit();
 }
