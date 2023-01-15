@@ -12,6 +12,10 @@
     "idf.toolsPathWin": "C:\\Users\\david\\.espressif",
     "files.associations": {
         "*.txt": "cmake",
+        "cmd_decl.h": "c",
+        "esp_vfs_fat.h": "c",
+        "esp_vfs_dev.h": "c",
+        "linenoise.h": "c",
         "*.inc": "c",
         "argtable3.h": "c",
         "esp_console.h": "c",
@@ -28,7 +32,8 @@
         "string_view": "c",
         "initializer_list": "c",
         "regex": "c",
-        "linenoise.h": "c",
-        "errno.h": "c"
+        "errno.h": "c",
+        "freertos.h": "c",
+        "task.h": "c"
     }
 }

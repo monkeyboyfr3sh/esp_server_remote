@@ -34,6 +34,7 @@ static void register_free(void);
 static void register_heap(void);
 static void register_version(void);
 static void register_restart(void);
+static void register_clear(void);
 static void register_deep_sleep(void);
 static void register_light_sleep(void);
 #if WITH_TASKS_INFO
@@ -46,6 +47,7 @@ void register_system_common(void)
     register_heap();
     register_version();
     register_restart();
+    register_clear();
 #if WITH_TASKS_INFO
     register_tasks();
 #endif
@@ -108,6 +110,23 @@ static void register_restart(void)
         .help = "Software reset of the chip",
         .hint = NULL,
         .func = &restart,
+    };
+    ESP_ERROR_CHECK( esp_console_cmd_register(&cmd) );
+}
+
+static int clear_terminal(int argc, char **argv)
+{
+    printf("\e[2JH");
+    return 0;
+}
+
+static void register_clear(void)
+{
+    const esp_console_cmd_t cmd = {
+        .command = "clear",
+        .help = "Clear terminal",
+        .hint = NULL,
+        .func = &clear_terminal,
     };
     ESP_ERROR_CHECK( esp_console_cmd_register(&cmd) );
 }
