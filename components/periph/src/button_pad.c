@@ -85,10 +85,16 @@ esp_err_t setup_button_pad(void)
     return ESP_OK;
 }
 
-esp_err_t fancy_evt_queue_push(uint32_t item)
+esp_err_t button_pad_evt_queue_push(bool level, TickType_t tick, uint32_t event_pin)
 {
-    uint32_t item_push = (uint32_t) item;
-    if( xQueueSendToBack(button_pad_evt_queue, &item_push, portMAX_DELAY) ){
+    // Create input
+    dio_evt_t dio_evt = {
+        .level = level,
+        .tick = tick,
+        .event_pin = event_pin,
+    };
+    // Now push into queue
+    if( xQueueSendToBack(button_pad_evt_queue, ( void* )&dio_evt, portMAX_DELAY) ){
         return ESP_OK;
     } else {
         ESP_LOGW(TAG,"Failed to queue item");

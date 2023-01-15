@@ -46,6 +46,8 @@
         "esp_log.h": "c",
         "button_pad_handler.h": "c",
         "complex": "c",
-        "gpio_example_handler.h": "c"
+        "gpio_example_handler.h": "c",
+        "bitset": "c",
+        "chrono": "c"
     }
 }

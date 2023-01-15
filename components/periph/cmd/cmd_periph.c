@@ -20,35 +20,43 @@ static const char *TAG = "cmd_periph";
 
 /** Arguments used by 'join' function */
 static struct {
-    struct arg_int *button_pad_number;
+    struct arg_int *level;
+    struct arg_int *tick;
+    struct arg_int *event_pin;
     struct arg_end *end;
 } button_pad_push_args;
 
-static int fancy_push(int argc, char **argv)
+static int button_pad_push(int argc, char **argv)
 {
     int nerrors = arg_parse(argc, argv, (void **) &button_pad_push_args);
     if (nerrors != 0) {
         arg_print_errors(stderr, button_pad_push_args.end, argv[0]);
         return 1;
     }
-    if(button_pad_push_args.button_pad_number->count){
-        return fancy_evt_queue_push(button_pad_push_args.button_pad_number->ival[0]);
-    } else {
-        ESP_LOGW(TAG,"No button number!");
+
+    // Check for empty input    
+    if( (!button_pad_push_args.level->count) || (!button_pad_push_args.tick->count) || (!button_pad_push_args.event_pin->count) ){
+        if( !button_pad_push_args.level->count ){ ESP_LOGW(TAG,"No level given!"); }
+        if( !button_pad_push_args.tick->count ){ ESP_LOGW(TAG,"No tick given!"); }
+        if( !button_pad_push_args.event_pin->count ){ ESP_LOGW(TAG,"No event pin given!"); }
         return ESP_ERR_INVALID_ARG;
+    } else {
+        return button_pad_evt_queue_push(button_pad_push_args.level->ival[0], button_pad_push_args.tick->ival[0], button_pad_push_args.event_pin->ival[0]);
     }
 }
 
 void register_button_pad_push(void)
 {
-    button_pad_push_args.button_pad_number = arg_int0("n", "button_number", "<pin#>", "Button number to push");
+    button_pad_push_args.level = arg_int0("l", "level", "<0/1>", "Level for event push");
+    button_pad_push_args.tick = arg_int0("t", "tick", "<u32>", "Tick for event push");
+    button_pad_push_args.event_pin = arg_int0("e", "event_pin", "<u32>", "Pin number for event push");
     button_pad_push_args.end = arg_end(2);
 
     const esp_console_cmd_t cmd = {
-        .command = "fancy_push",
-        .help = "Pushes button_number into fancy event queue to simulate hw trigger",
+        .command = "button_pad_push",
+        .help = "Pushes event_details into button_pad_evt_queue",
         .hint = NULL,
-        .func = &fancy_push,
+        .func = &button_pad_push,
         .argtable = &button_pad_push_args
     };
 
