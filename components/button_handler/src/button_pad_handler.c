@@ -54,7 +54,7 @@ void button_pad_task(void* arg)
 		prev_dio_evt = dio_evt;
         // Capture new event
 		if(xQueueReceive(button_pad_evt_queue, &dio_evt, portMAX_DELAY)) {
-			ESP_LOGI(TAG,"Event details: level=%d tick=%d pin=%d",dio_evt.level,dio_evt.tick,dio_evt.event_pin);
+			// ESP_LOGI(TAG,"Event details: level=%d tick=%d pin=%d",dio_evt.level,dio_evt.tick,dio_evt.event_pin);
 
 			switch (dio_evt.event_pin)
 			{

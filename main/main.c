@@ -34,6 +34,12 @@ void app_main(void)
     // xTaskCreate(gpio_task_example, "gpio_thread", 4096, NULL, 5, NULL);
     xTaskCreate(button_pad_task, "button_pad_thread", 4096, NULL, 5, NULL);
 
+	while(1)
+	{
+		ESP_LOGI(TAG,"Main loop!");
+		vTaskDelay(pdMS_TO_TICKS(500));
+	}
+
 	// Main exit
 	ESP_LOGI(TAG,"Main thread exit");
 	vTaskDelete(NULL);
