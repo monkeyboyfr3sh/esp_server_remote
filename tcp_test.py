@@ -19,8 +19,9 @@ def tx_serial_thread(socket):
     print("TX serial thread enters")
     while(1):
         # Transmit data
-        print("Type your message:", end=' ')
+        # print("Type your message:", end=' ')
         tx_string = input()
+        tx_string = tx_string+"\x0A"
         tx_data = tx_string.encode()
         s.sendall(tx_data)
         time.sleep(1)
@@ -28,17 +29,21 @@ def tx_serial_thread(socket):
 if __name__ == "__main__":
     print("main thread enters")
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        print("Connecting to server")
+        
         # Connect to host
+        print("Connecting to server... ",end="")
         s.connect((HOST, PORT))
-
+        print("Connected")
+        
         # Fork tx thread
         print("Forking tx thread")
-        thread = threading.Thread(target=tx_serial_thread,args=(s))
-        
+        tx_thread = threading.Thread(target=tx_serial_thread,args=(s,))
+        tx_thread.start()
+
         # Fork rx thread
         print("Forking rx thread")
-        thread = threading.Thread(target=rx_serial_thread,args=(s))
+        rx_thread = threading.Thread(target=rx_serial_thread,args=(s,))
+        rx_thread.start()
 
         while(1):
             time.sleep(1)

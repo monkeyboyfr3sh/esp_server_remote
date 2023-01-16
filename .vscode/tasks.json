@@ -2,6 +2,12 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "launch qemu",
+            "type": "shell",
+            "command": "qemu-system-xtensa -nographic -gdb tcp::3333 -S -machine esp32 -drive file=build/merged_qemu.bin,if=mtd,format=raw",
+            "problemMatcher": []
+        },
+        {
             "label": "Build - Build project",
             "type": "shell",
             "command": "${config:idf.pythonBinPath} ${config:idf.espIdfPath}/tools/idf.py build",

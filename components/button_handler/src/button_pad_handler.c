@@ -45,10 +45,11 @@ void button_pad_task(void* arg)
 	TickType_t button_3_timestamp = 0;
 	TickType_t button_4_timestamp = 0;
 	TickType_t button_5_timestamp = 0;
-
+	
     dio_evt_t prev_dio_evt = { 0 };
     dio_evt_t dio_evt = { 0 };
-    for(;;) {
+	while(1)
+	{
 		// Update history
 		prev_dio_evt = dio_evt;
         // Capture new event
