@@ -25,10 +25,10 @@ static const char* TAG = "main";
 
 void app_main(void)
 {
-    // initialize_nvs();
+    initialize_nvs();
 
-	// ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
-	// wifi_init_sta();
+	ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
+	wifi_init_sta();
 
     xTaskCreate(terminal_task, "terminal_thread", 4096, NULL, 5, NULL);
     // xTaskCreate(gpio_task_example, "gpio_thread", 4096, NULL, 5, NULL);
