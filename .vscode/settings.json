@@ -53,6 +53,10 @@
         "input.h": "c",
         "ssh.h": "c",
         "display_helper.h": "c",
-        "board.h": "c"
+        "board.h": "c",
+        "msg_handler.h": "c",
+        "periph_adc_button.h": "c",
+        "set": "c",
+        "esp_peripherals.h": "c"
     }
 }

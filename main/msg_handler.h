@@ -11,8 +11,6 @@
 #include "periph_button.h"
 #include "periph_adc_button.h"
 
-esp_err_t init_msg_handler(esp_periph_handle_t * bt_periph, display_service_handle_t * led_periph);
 esp_err_t msg_handler(audio_event_iface_msg_t msg);
-
 
 #endif

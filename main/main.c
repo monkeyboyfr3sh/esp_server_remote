@@ -17,12 +17,21 @@
 #include "esp_err.h"
 #include "esp_log.h"
 
+#include "esp_log.h"
+#include "esp_peripherals.h"
+#include "periph_touch.h"
+#include "periph_adc_button.h"
+#include "periph_button.h"
+#include "audio_element.h"
+#include "audio_pipeline.h"
+#include "audio_event_iface.h"
+
 #include "wifi_event.h"
 #include "input.h"
 #include "ssh.h"
 
 #include "display_helper.h"
-// #include "msg_handler.h"
+#include "msg_handler.h"
 
 static const char *TAG = "MAIN";
 
@@ -56,18 +65,41 @@ void app_main(void)
     // Set to wakeup on pattern
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
-    // ESP_LOGI(TAG, "[4.4] Initialize msg handler");
-    // init_msg_handler(&led_periph);
+    ESP_LOGI(TAG, "[ 4 ] Initialize peripherals");
+    esp_periph_config_t periph_cfg = DEFAULT_ESP_PERIPH_SET_CONFIG();
+    esp_periph_set_handle_t set = esp_periph_set_init(&periph_cfg);
+
+    ESP_LOGI(TAG, "[4.1] Initialize Touch peripheral");
+    audio_board_key_init(set);
+
+    ESP_LOGI(TAG, "[ 5 ] Set up  event listener");
+    audio_event_iface_cfg_t evt_cfg = AUDIO_EVENT_IFACE_DEFAULT_CFG();
+    audio_event_iface_handle_t evt = audio_event_iface_init(&evt_cfg);
+
+    ESP_LOGI(TAG, "[5.2] Listening event from peripherals");
+    audio_event_iface_set_listener(esp_periph_set_get_event_iface(set), evt);
 
 	// Connect to wifi
 	wifi_init_sta();
 
-	// Set to wakeup on pattern
-    display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
+	// // Initialize an input task
+	// xTaskCreate(&stdin_input_task, "input", 1024*8, NULL, 2, NULL);
 
-	// Initialize an input task
-	xTaskCreate(&stdin_input_task, "input", 1024*8, NULL, 2, NULL);
+    // Set to wakeup finished pattern
+    vTaskDelay(pdMS_TO_TICKS(20));
+    display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 0);    
 
+	while (1) {
+        audio_event_iface_msg_t msg;
+        esp_err_t ret = audio_event_iface_listen(evt, &msg, portMAX_DELAY);
+        if (ret != ESP_OK) {
+            ESP_LOGE(TAG, "Event interface error: '%s'", esp_err_to_name(ret) );
+            continue;
+        }
+
+		// Handle msg events
+        msg_handler(msg);
+	}
 	// Now kill main thread
 	vTaskDelete(NULL);
 }
