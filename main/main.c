@@ -23,19 +23,16 @@
 
 static const char *TAG = "MAIN";
 
-static void SPIFFS_Directory(char * path) {
-	DIR* dir = opendir(path);
-	assert(dir != NULL);
-	while (true) {
-		struct dirent*pe = readdir(dir);
-		if (!pe) break;
-		ESP_LOGI(__FUNCTION__,"d_name=%s d_ino=%d d_type=%x", pe->d_name,pe->d_ino, pe->d_type);
-	}
-	closedir(dir);
-}
-
-void ssh_task(void *pvParameters);
-
+// static void SPIFFS_Directory(char * path) {
+// 	DIR* dir = opendir(path);
+// 	assert(dir != NULL);
+// 	while (true) {
+// 		struct dirent*pe = readdir(dir);
+// 		if (!pe) break;
+// 		ESP_LOGI(__FUNCTION__,"d_name=%s d_ino=%d d_type=%x", pe->d_name,pe->d_ino, pe->d_type);
+// 	}
+// 	closedir(dir);
+// }
 
 void app_main(void)
 {
@@ -50,10 +47,6 @@ void app_main(void)
 	// Connect to wifi
 	wifi_init_sta();
 
-	// Create Eventgroup
-	xEventGroup = xEventGroupCreate();
-	configASSERT( xEventGroup );
-
 	char buff[1024];
 	while(1){
 		
@@ -62,17 +55,23 @@ void app_main(void)
 		if (err != ESP_OK){
 			ESP_LOGE(TAG,"Error: %s",esp_err_to_name(err));
 		}
+		
+		// Create input for ssh task
+		ssh_task_input_t task_parameters;
+		ESP_ERROR_CHECK(create_ssh_task_input( (ssh_task_input_t *)&task_parameters, (char *)buff ));
 
 		// Execute ssh command
-		xEventGroupClearBits( xEventGroup, SSH_TASK_FINISH_BIT );
-		xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) buff, 2, NULL);
+		xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) &task_parameters, 2, NULL);
 
 		// Wit for ssh finish.
-		xEventGroupWaitBits( xEventGroup,
+		xEventGroupWaitBits( task_parameters.xEventGroup,
 			SSH_TASK_FINISH_BIT,	/* The bits within the event group to wait for. */
 			pdTRUE,				/* HTTP_CLOSE_BIT should be cleared before returning. */
 			pdFALSE,			/* Don't wait for both bits, either bit will do. */
-			portMAX_DELAY);		/* Wait forever. */	
+			portMAX_DELAY);		/* Wait forever. */
+
+		// Delete the input
+		ESP_ERROR_CHECK(delete_ssh_task_input( (ssh_task_input_t *)&task_parameters ));
 	}
 	ESP_LOGI(TAG, "SSH all finish");
 

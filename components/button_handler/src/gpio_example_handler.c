@@ -15,7 +15,6 @@
 #include "freertos/queue.h"
 #include "driver/gpio.h"
 
-#include "ssh.h"
 #include "gpio_example.h"
 #include "button_handler_shared.h"
 #include "periph_shared.h"
@@ -100,15 +99,15 @@ void gpio_task_example(void* arg)
 					button_1_timestamp = xTaskGetTickCount();
 					ESP_LOGI(TAG,"Interrupt from Button 1!");
 
-					// Put them into the input struct
-					ssh_cmd_input_t ssh_command;
-					ssh_command.username = "root";
-					ssh_command.host = "192.168.0.15";
-					int command_index = button_cmd_lut[0];
-					ssh_command.command = button_cmd_list[command_index];
-					ssh_command.password = "openDoor";
+					// // Put them into the input struct
+					// ssh_cmd_input_t ssh_command;
+					// ssh_command.username = "root";
+					// ssh_command.host = "192.168.0.15";
+					// int command_index = button_cmd_lut[0];
+					// ssh_command.command = button_cmd_list[command_index];
+					// ssh_command.password = "openDoor";
 				
-					xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
 				}
 				break;
 
@@ -118,15 +117,15 @@ void gpio_task_example(void* arg)
 					button_2_timestamp = xTaskGetTickCount();
 					ESP_LOGI(TAG,"Interrupt from Button 2!");
 
-					// Put them into the input struct
-					ssh_cmd_input_t ssh_command;
-					ssh_command.username = "root";
-					ssh_command.host = "192.168.0.15";
-					int command_index = button_cmd_lut[1];
-					ssh_command.command = button_cmd_list[command_index];
-					ssh_command.password = "openDoor";
+					// // Put them into the input struct
+					// ssh_cmd_input_t ssh_command;
+					// ssh_command.username = "root";
+					// ssh_command.host = "192.168.0.15";
+					// int command_index = button_cmd_lut[1];
+					// ssh_command.command = button_cmd_list[command_index];
+					// ssh_command.password = "openDoor";
 				
-					xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
 				}
 				break;
 
@@ -136,15 +135,15 @@ void gpio_task_example(void* arg)
 					button_3_timestamp = xTaskGetTickCount();
 					ESP_LOGI(TAG,"Interrupt from Button 3!");
 
-					// Put them into the input struct
-					ssh_cmd_input_t ssh_command;
-					ssh_command.username = "root";
-					ssh_command.host = "192.168.0.15";
-					int command_index = button_cmd_lut[2];
-					ssh_command.command = button_cmd_list[command_index];
-					ssh_command.password = "openDoor";
+					// // Put them into the input struct
+					// ssh_cmd_input_t ssh_command;
+					// ssh_command.username = "root";
+					// ssh_command.host = "192.168.0.15";
+					// int command_index = button_cmd_lut[2];
+					// ssh_command.command = button_cmd_list[command_index];
+					// ssh_command.password = "openDoor";
 				
-					xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
 				}
 				break;
 
@@ -154,15 +153,15 @@ void gpio_task_example(void* arg)
 					button_4_timestamp = xTaskGetTickCount();
 					ESP_LOGI(TAG,"Interrupt from Button 4!");
 
-					// Put them into the input struct
-					ssh_cmd_input_t ssh_command;
-					ssh_command.username = "root";
-					ssh_command.host = "192.168.0.15";
-					int command_index = button_cmd_lut[3];
-					ssh_command.command = button_cmd_list[command_index];
-					ssh_command.password = "openDoor";
+					// // Put them into the input struct
+					// ssh_cmd_input_t ssh_command;
+					// ssh_command.username = "root";
+					// ssh_command.host = "192.168.0.15";
+					// int command_index = button_cmd_lut[3];
+					// ssh_command.command = button_cmd_list[command_index];
+					// ssh_command.password = "openDoor";
 				
-					xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
 				}
 				break;
 
@@ -172,15 +171,15 @@ void gpio_task_example(void* arg)
 					button_5_timestamp = xTaskGetTickCount();
 					ESP_LOGI(TAG,"Interrupt from Button 5!");
 
-					// Put them into the input struct
-					ssh_cmd_input_t ssh_command;
-					ssh_command.username = "root";
-					ssh_command.host = "192.168.0.15";
-					int command_index = button_cmd_lut[4];
-					ssh_command.command = button_cmd_list[command_index];
-					ssh_command.password = "openDoor";
+					// // Put them into the input struct
+					// ssh_cmd_input_t ssh_command;
+					// ssh_command.username = "root";
+					// ssh_command.host = "192.168.0.15";
+					// int command_index = button_cmd_lut[4];
+					// ssh_command.command = button_cmd_list[command_index];
+					// ssh_command.password = "openDoor";
 				
-					xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
+					// xTaskCreate(&ssh_command_task, "SSH_CMD", 1024*8, (void *) &ssh_command, 2, NULL);
 				}
 				break;
 			

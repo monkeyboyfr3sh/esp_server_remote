@@ -28,8 +28,6 @@
 
 static const char *TAG = "SSH";
 
-EventGroupHandle_t xEventGroup;
-
 static int waitsocket(int socket_fd, LIBSSH2_SESSION *session)
 {
 	struct timeval timeout;
@@ -70,8 +68,8 @@ void print_command(char* command)
 
 void ssh_task(void *pvParameters)
 {
-	char *task_parameter = (char *)pvParameters;
-	ESP_LOGI(TAG, "Start task_parameter=%s", task_parameter);
+	ssh_task_input_t * task_parameter = (ssh_task_input_t *)pvParameters;
+	ESP_LOGI(TAG, "Start task_parameter=%s", task_parameter->command);
 
 	// SSH Staff
 	int sock;
@@ -169,14 +167,14 @@ void ssh_task(void *pvParameters)
 		while(1) { vTaskDelay(1); }
 	}
 
-	while((rc = libssh2_channel_exec(channel, task_parameter)) == LIBSSH2_ERROR_EAGAIN)
+	while((rc = libssh2_channel_exec(channel, task_parameter->command)) == LIBSSH2_ERROR_EAGAIN)
 	waitsocket(sock, session);
 	if(rc != 0) {
 		ESP_LOGE(TAG, "libssh2_channel_exec failed: %d", rc);
 		while(1) { vTaskDelay(1); }
 	}
 
-	print_command(task_parameter);
+	print_command(task_parameter->command);
 
 	// Now execute the command
 	int bytecount = 0;
@@ -240,10 +238,33 @@ void ssh_task(void *pvParameters)
 
 	// Close socket
 	close(sock);
-	ESP_LOGI(TAG, "[%s] done\n", task_parameter);
+	ESP_LOGI(TAG, "[%s] done\n", task_parameter->command);
 
 	libssh2_exit();
 
-	xEventGroupSetBits( xEventGroup, SSH_TASK_FINISH_BIT );
+	xEventGroupSetBits( task_parameter->xEventGroup, SSH_TASK_FINISH_BIT );
 	vTaskDelete( NULL );
+}
+
+esp_err_t create_ssh_task_input(ssh_task_input_t * task_parameters, char * command)
+{
+	// Create Eventgroup
+	EventGroupHandle_t xEventGroup = xEventGroupCreate();
+	configASSERT( xEventGroup );
+	xEventGroupClearBits( xEventGroup, SSH_TASK_FINISH_BIT );
+	
+	ssh_task_input_t input = {
+		.xEventGroup = xEventGroup,
+		.command = command,
+	};
+	*task_parameters = input;
+
+    return ESP_OK;
+}
+
+esp_err_t delete_ssh_task_input(ssh_task_input_t * task_parameters)
+{
+	// De-alloc event group
+	vEventGroupDelete(task_parameters->xEventGroup);
+	return ESP_OK;
 }
