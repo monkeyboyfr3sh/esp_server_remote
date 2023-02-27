@@ -3,6 +3,6 @@
 
 #include "esp_err.h"
 
-esp_err_t get_command(char* buff, int buff_len);
+void stdin_input_task(void * pvParameters);
 
 #endif

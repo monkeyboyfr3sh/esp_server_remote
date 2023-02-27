@@ -10,6 +10,7 @@
 #define DISPLAY_IDLE_DUTY_VAL       20
 #define DISPLAY_ACTIVE_DUTY_VAL     60
 
-display_service_handle_t my_audio_board_init(void);
+extern display_service_handle_t led_periph;
+esp_err_t init_display_helper(void);
 
 #endif

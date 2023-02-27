@@ -13,11 +13,15 @@
 #include "periph_is31fl3216.h"
 
 static const char *TAG = "DISPLAY_HELPER";
+
+display_service_handle_t led_periph;
+
 #define MAX_LED_INDEX       (14)
 #define GREEN_LED_INDEX     (13)
 #define RED_LED_INDEX       (12)
 #define GREEN_LED_BIT_MASK  (1 << GREEN_LED_INDEX)
 #define RED_LED_BIT_MASK    (1 << RED_LED_INDEX)
+
 static esp_err_t my_led_bar_is31x_pattern(void *handle, int pat, int value)
 {
     esp_err_t ret =  ESP_OK;
@@ -239,7 +243,7 @@ static esp_err_t my_led_bar_is31x_pattern(void *handle, int pat, int value)
     return ret;
 }
 
-display_service_handle_t my_audio_board_init(void)
+static display_service_handle_t my_audio_board_init(void)
 {
     esp_periph_handle_t led = led_bar_is31x_init();
     AUDIO_NULL_CHECK(TAG, led, return NULL);
@@ -260,4 +264,11 @@ display_service_handle_t my_audio_board_init(void)
     };
 
     return display_service_create(&display);
+}
+
+esp_err_t init_display_helper(void)
+{
+    // Initialize the led periph
+    led_periph = my_audio_board_init();
+    return ESP_OK;
 }

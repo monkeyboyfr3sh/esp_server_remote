@@ -19,6 +19,11 @@
 #include "esp_err.h"
 #include "esp_log.h"
 
+#include "ssh.h"
+#include "display_helper.h"
+
+static const char *TAG = "INPUT";
+
 #define WDT_PERIOD_TICKS	100
 #define CHAR_PRINT_LOW		32
 #define CHAR_PRINT_HIGH		126
@@ -26,7 +31,7 @@
 #define CHAR_SPACE			32
 #define CHAR_ENTER			10
 
-esp_err_t get_command(char* buff, int buff_len)
+static esp_err_t get_command(char* buff, int buff_len)
 {
 	TickType_t WDT_timestamp = xTaskGetTickCount();
 	int char_count = 0;
@@ -69,4 +74,45 @@ esp_err_t get_command(char* buff, int buff_len)
 	buff[char_count] = 0;
 
 	return ESP_OK;
+}
+
+void stdin_input_task(void * pvParameters)
+{
+	char buff[1024];
+	while(1){
+		
+		// Get the command
+		esp_err_t err = get_command(buff,1024);
+		if (err != ESP_OK){
+			ESP_LOGE(TAG,"Error: %s",esp_err_to_name(err));
+		}
+		
+    	// Set to wakeup on pattern
+    	display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
+
+		// Create input for ssh task
+		ssh_task_input_t task_parameters;
+		ESP_ERROR_CHECK( create_ssh_task_input( (ssh_task_input_t *)&task_parameters, (char *)buff ) );
+
+		// Execute ssh command
+		xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) &task_parameters, 2, NULL);
+
+		// Wait for ssh task to finish.
+		xEventGroupWaitBits( task_parameters.xEventGroup,
+			SSH_TASK_FINISH_BIT,	/* The bits within the event group to wait for. */
+			pdTRUE,				/* HTTP_CLOSE_BIT should be cleared before returning. */
+			pdFALSE,			/* Don't wait for both bits, either bit will do. */
+			portMAX_DELAY);		/* Wait forever. */
+
+		// Check if failed
+		EventBits_t flags = xEventGroupGetBits(task_parameters.xEventGroup);
+		if( flags & SSH_TASK_FAIL_BIT ) { ESP_LOGE(TAG,"SSH task failed!"); }
+		else 							{ ESP_LOGI(TAG,"SSH task finished successfully!"); }
+
+		// Delete the input
+		ESP_ERROR_CHECK( delete_ssh_task_input( (ssh_task_input_t *)&task_parameters ) );
+
+		// Set to wakeup on pattern
+		display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
+	}
 }

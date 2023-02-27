@@ -211,7 +211,7 @@ void ssh_task(void *pvParameters)
 		else
 			break;
 	} // end for
-	fputc("\n", stdout);
+	fputc('\n', stdout);
 
 	int exitcode = 127;
 	char *exitsignal = (char *)"none";
