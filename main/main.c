@@ -21,6 +21,9 @@
 #include "input.h"
 #include "ssh.h"
 
+#include "display_helper.h"
+// #include "msg_handler.h"
+
 static const char *TAG = "MAIN";
 
 // static void SPIFFS_Directory(char * path) {
@@ -45,8 +48,23 @@ void app_main(void)
 	}
 	ESP_ERROR_CHECK(ret);
 
+    // Initialize display and set ot turn on mode
+    ESP_LOGI(TAG, "[ 0 ] Initialize display peripheral");
+    display_service_handle_t led_periph =   my_audio_board_init();
+    display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_TURN_ON , 0);
+
+    // Set to wakeup on pattern
+    display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
+
+    // ESP_LOGI(TAG, "[4.4] Initialize msg handler");
+    // init_msg_handler(&led_periph);
+
+
 	// Connect to wifi
 	wifi_init_sta();
+
+	// Set to wakeup on pattern
+    display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
 
 	char buff[1024];
 	while(1){
@@ -57,6 +75,9 @@ void app_main(void)
 			ESP_LOGE(TAG,"Error: %s",esp_err_to_name(err));
 		}
 		
+    	// Set to wakeup on pattern
+    	display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
+
 		// Create input for ssh task
 		ssh_task_input_t task_parameters;
 		ESP_ERROR_CHECK( create_ssh_task_input( (ssh_task_input_t *)&task_parameters, (char *)buff ) );
@@ -78,6 +99,9 @@ void app_main(void)
 
 		// Delete the input
 		ESP_ERROR_CHECK( delete_ssh_task_input( (ssh_task_input_t *)&task_parameters ) );
+
+		// Set to wakeup on pattern
+		display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
 	}
 
 	ESP_LOGI(TAG, "SSH all finish");
