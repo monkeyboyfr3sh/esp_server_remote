@@ -35,6 +35,7 @@ static const char *TAG = "MAIN";
 // }
 
 void app_main(void)
+
 {
 	//Initialize NVS
 	esp_err_t ret = nvs_flash_init();
@@ -63,12 +64,17 @@ void app_main(void)
 		// Execute ssh command
 		xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) &task_parameters, 2, NULL);
 
-		// Wit for ssh finish.
+		// Wait for ssh finish.
 		xEventGroupWaitBits( task_parameters.xEventGroup,
 			SSH_TASK_FINISH_BIT,	/* The bits within the event group to wait for. */
 			pdTRUE,				/* HTTP_CLOSE_BIT should be cleared before returning. */
 			pdFALSE,			/* Don't wait for both bits, either bit will do. */
 			portMAX_DELAY);		/* Wait forever. */
+
+		// Check if failed
+		EventBits_t flags = xEventGroupGetBits(task_parameters.xEventGroup);
+		if( flags & SSH_TASK_FAIL_BIT ) { ESP_LOGE(TAG,"SSH task failed!"); }
+		else 							{ ESP_LOGI(TAG,"SSH task finished successfully!"); }
 
 		// Delete the input
 		ESP_ERROR_CHECK( delete_ssh_task_input( (ssh_task_input_t *)&task_parameters ) );

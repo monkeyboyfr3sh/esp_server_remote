@@ -28,6 +28,9 @@
 
 static const char *TAG = "SSH";
 
+static void ssh_task_exit(ssh_task_input_t * task_parameter);
+static void ssh_task_fail(ssh_task_input_t * task_parameter);
+
 static int waitsocket(int socket_fd, LIBSSH2_SESSION *session)
 {
 	struct timeval timeout;
@@ -62,6 +65,7 @@ static int waitsocket(int socket_fd, LIBSSH2_SESSION *session)
 
 void print_command(char* command)
 {
+	// TODO: want to configure this to use STDOUT/ERR
 	printf("%s%s%s@%s%s\e[0m: ", COLOR_1,CONFIG_SSH_USER,COLOR_2,COLOR_1,CONFIG_SSH_HOST);
 	printf("%s > \r\n",command);
 }
@@ -81,7 +85,7 @@ void ssh_task(void *pvParameters)
 	int rc = libssh2_init(0);
 	if(rc) {
 		ESP_LOGE(TAG, "libssh2 initialization failed (%d)", rc);
-		while(1) { vTaskDelay(1); }
+		ssh_task_fail(task_parameter);
 	}
 
 	ESP_LOGI(TAG, "CONFIG_SSH_HOST=%s", CONFIG_SSH_HOST);
@@ -96,7 +100,7 @@ void ssh_task(void *pvParameters)
 		hp = gethostbyname(CONFIG_SSH_HOST);
 		if (hp == NULL) {
 			ESP_LOGE(TAG, "gethostbyname fail %s", CONFIG_SSH_HOST);
-			while(1) { vTaskDelay(1); }
+			ssh_task_fail(task_parameter);
 		}
 		struct ip4_addr *ip4_addr;
 		ip4_addr = (struct ip4_addr *)hp->h_addr;
@@ -108,20 +112,20 @@ void ssh_task(void *pvParameters)
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if(sock == -1) {
 		ESP_LOGE(TAG, "failed to create socket!");
-		while(1) { vTaskDelay(1); }
+		ssh_task_fail(task_parameter);
 	}
 
 	ESP_LOGI(TAG,"Connecting to socket");
 	if(connect(sock, (struct sockaddr*)(&sin), sizeof(struct sockaddr_in)) != 0) {
 		ESP_LOGE(TAG, "failed to connect!");
-		while(1) { vTaskDelay(1); }
+		ssh_task_fail(task_parameter);
 	}
 
 	/* Create a session instance */
 	session = libssh2_session_init();
 	if(!session) {
 		ESP_LOGE(TAG, "failed to session init");
-		while(1) { vTaskDelay(1); }
+		ssh_task_fail(task_parameter);
 	}
 
 	/* ... start it up. This will trade welcome banners, exchange keys,
@@ -130,14 +134,14 @@ void ssh_task(void *pvParameters)
 	rc = libssh2_session_handshake(session, sock);
 	if(rc) {
 		ESP_LOGE(TAG, "Failure establishing SSH session: %d", rc);
-		while(1) { vTaskDelay(1); }
+		ssh_task_fail(task_parameter);
 	}
 
 	/* We could authenticate via password */
 	if(libssh2_userauth_password(session, CONFIG_SSH_USER, CONFIG_SSH_PASSWORD)) {
 		ESP_LOGE(TAG, "Authentication by password failed.");
 		ESP_LOGE(TAG, "Authentication username : [%s].", CONFIG_SSH_USER);
-		while(1) { vTaskDelay(1); }
+		ssh_task_fail(task_parameter);
 	}
 
 #if 0
@@ -149,7 +153,7 @@ void ssh_task(void *pvParameters)
 	if(libssh2_userauth_publickey_fromfile(session, CONFIG_SSH_USER, publickey, privatekey, NULL)) {
 		ESP_LOGE(TAG, "Authentication by privatekey failed.");
 		ESP_LOGE(TAG, "Authentication username : [%s].", CONFIG_SSH_USER);
-		while(1) { vTaskDelay(1); }
+		ssh_task_fail(task_parameter);
 	}
 #endif
 
@@ -164,14 +168,14 @@ void ssh_task(void *pvParameters)
 	}
 	if(channel == NULL) {
 		ESP_LOGE(TAG, "libssh2_channel_open_session failed.");
-		while(1) { vTaskDelay(1); }
+		ssh_task_fail(task_parameter);
 	}
 
 	while((rc = libssh2_channel_exec(channel, task_parameter->command)) == LIBSSH2_ERROR_EAGAIN)
 	waitsocket(sock, session);
 	if(rc != 0) {
 		ESP_LOGE(TAG, "libssh2_channel_exec failed: %d", rc);
-		while(1) { vTaskDelay(1); }
+		ssh_task_fail(task_parameter);
 	}
 
 	print_command(task_parameter->command);
@@ -194,7 +198,7 @@ void ssh_task(void *pvParameters)
 			else if(rc < 0) {
 					/* no need to output this for the EAGAIN case */
 					ESP_LOGI(TAG, "libssh2_channel_read returned %d", rc);
-					//while(1) { vTaskDelay(1); }
+					ssh_task_fail(task_parameter);
 			}
 		}
 		while(rc > 0);
@@ -207,8 +211,7 @@ void ssh_task(void *pvParameters)
 		else
 			break;
 	} // end for
-	printf("\n");
-
+	fputc("\n", stdout);
 
 	int exitcode = 127;
 	char *exitsignal = (char *)"none";
@@ -220,14 +223,12 @@ void ssh_task(void *pvParameters)
 										NULL, NULL, NULL, NULL, NULL);
 	} else {
 		ESP_LOGE(TAG, "libssh2_channel_close failed: %d", rc);
-		while(1) { vTaskDelay(1); }
+		ssh_task_fail(task_parameter);
 	}
 
-	if(exitsignal)
-		ESP_LOGI(TAG, "EXIT: %d, SIGNAL: %s, bytecount: %d", exitcode, exitsignal, bytecount);
-		//ESP_LOGI(TAG, "Got signal: %s", exitsignal);
-	else
-		ESP_LOGI(TAG, "EXIT: %d, bytecount: %d", exitcode, bytecount);
+	// How are we exiting
+	if(exitsignal)	{ ESP_LOGI(TAG, "EXIT: %d, SIGNAL: %s, bytecount: %d", exitcode, exitsignal, bytecount); }
+	else			{ ESP_LOGI(TAG, "EXIT: %d, bytecount: %d", exitcode, bytecount); }
 
 	libssh2_channel_free(channel);
 	channel = NULL;
@@ -242,8 +243,19 @@ void ssh_task(void *pvParameters)
 
 	libssh2_exit();
 
+	ssh_task_exit(task_parameter);
+}
+
+static void ssh_task_exit(ssh_task_input_t * task_parameter)
+{
 	xEventGroupSetBits( task_parameter->xEventGroup, SSH_TASK_FINISH_BIT );
 	vTaskDelete( NULL );
+}
+
+static void ssh_task_fail(ssh_task_input_t * task_parameter)
+{
+	xEventGroupSetBits( task_parameter->xEventGroup, SSH_TASK_FAIL_BIT );
+	ssh_task_exit(task_parameter);
 }
 
 esp_err_t create_ssh_task_input(ssh_task_input_t * task_parameters, char * command)
