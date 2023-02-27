@@ -58,7 +58,7 @@ void app_main(void)
 		
 		// Create input for ssh task
 		ssh_task_input_t task_parameters;
-		ESP_ERROR_CHECK(create_ssh_task_input( (ssh_task_input_t *)&task_parameters, (char *)buff ));
+		ESP_ERROR_CHECK( create_ssh_task_input( (ssh_task_input_t *)&task_parameters, (char *)buff ) );
 
 		// Execute ssh command
 		xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) &task_parameters, 2, NULL);
@@ -71,8 +71,8 @@ void app_main(void)
 			portMAX_DELAY);		/* Wait forever. */
 
 		// Delete the input
-		ESP_ERROR_CHECK(delete_ssh_task_input( (ssh_task_input_t *)&task_parameters ));
+		ESP_ERROR_CHECK( delete_ssh_task_input( (ssh_task_input_t *)&task_parameters ) );
 	}
-	ESP_LOGI(TAG, "SSH all finish");
 
+	ESP_LOGI(TAG, "SSH all finish");
 }
