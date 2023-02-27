@@ -1,16 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include "esp_system.h"
-#include "esp_log.h"
-#include "esp_console.h"
-#include "esp_vfs_dev.h"
-#include "driver/uart.h"
-#include "linenoise/linenoise.h"
-#include "argtable3/argtable3.h"
-#include "cmd_decl.h"
-#include "esp_vfs_fat.h"
-#include "nvs.h"
-#include "nvs_flash.h"
+#include "wifi_event.h"
 
 #include <string.h>
 #include <sys/types.h>
@@ -18,6 +6,9 @@
 #include <errno.h>
 #include <stdio.h>
 #include <ctype.h>
+
+#include "lwip/err.h"
+#include "lwip/sys.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -30,32 +21,11 @@
 #include "esp_spiffs.h"
 #include "esp_err.h"
 #include "esp_log.h"
-#include "esp_wifi.h"
 
-#include "lwip/err.h"
-#include "lwip/sys.h"
-
-static const char* TAG = "connect";
-
-void initialize_nvs(void)
-{
-    esp_err_t err = nvs_flash_init();
-    if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        ESP_ERROR_CHECK( nvs_flash_erase() );
-        err = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(err);
-}
+static const char *TAG = "WIFI_EVENT";
 
 /* FreeRTOS event group to signal when we are connected*/
-static EventGroupHandle_t s_wifi_event_group;
-
-/* The event group allows multiple bits for each event, but we only care about two events:
- * - we are connected to the AP with an IP
- * - we failed to connect after the maximum amount of retries */
-#define WIFI_CONNECTED_BIT BIT0
-#define WIFI_FAIL_BIT	   BIT1
-
+EventGroupHandle_t s_wifi_event_group;
 static int s_retry_num = 0;
 
 static void event_handler(void* arg, esp_event_base_t event_base,
@@ -82,6 +52,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
 
 void wifi_init_sta(void)
 {
+	ESP_LOGI(TAG, "ESP_WIFI_MODE_STA");
 	s_wifi_event_group = xEventGroupCreate();
 
 	ESP_ERROR_CHECK(esp_netif_init());

@@ -48,6 +48,9 @@
         "complex": "c",
         "gpio_example_handler.h": "c",
         "bitset": "c",
-        "chrono": "c"
+        "chrono": "c",
+        "wifi_event.h": "c",
+        "input.h": "c",
+        "ssh.h": "c"
     }
 }
