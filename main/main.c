@@ -64,7 +64,7 @@ void app_main(void)
 		// Execute ssh command
 		xTaskCreate(&ssh_task, "SSH", 1024*8, (void *) &task_parameters, 2, NULL);
 
-		// Wait for ssh finish.
+		// Wait for ssh task to finish.
 		xEventGroupWaitBits( task_parameters.xEventGroup,
 			SSH_TASK_FINISH_BIT,	/* The bits within the event group to wait for. */
 			pdTRUE,				/* HTTP_CLOSE_BIT should be cleared before returning. */
