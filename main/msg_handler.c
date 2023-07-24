@@ -112,16 +112,22 @@ esp_err_t msg_handler(audio_event_iface_msg_t msg)
                 // periph_bluetooth_next((*bt_periph_shared));
             } else if ((int) msg.data == get_input_voldown_id()) {
                 ESP_LOGI(TAG, "[ * ] [Vol-] touch tap event");
-                // periph_bluetooth_prev((*bt_periph_shared));
-            } else if ((int) msg.data == get_input_mode_id()) {
-                ESP_LOGI(TAG,"[ * ] [Mode] touch tap event");
-                // ESP_LOGI(TAG,"[ * ] Switching mode to bluetooth mode");
                 // Set to wakeup on pattern
                 display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
                 // Run ssh task
-                // run_ssh_task_blocked("qm start 105");
-                run_ssh_task_blocked("ls");
+                run_ssh_task_blocked("qm start 101");
+
+                // Set to wakeup on pattern
+                display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
+
+            } else if ((int) msg.data == get_input_mode_id()) {
+                ESP_LOGI(TAG,"[ * ] [Mode] touch tap event");
+                // Set to wakeup on pattern
+                display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
+
+                // Run ssh task
+                run_ssh_task_blocked("qm start 105");
 
                 // Set to wakeup on pattern
                 display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
