@@ -229,6 +229,10 @@ void ssh_task(void *pvParameters)
 	// How are we exiting
 	if(exitsignal)	{ ESP_LOGI(TAG, "EXIT: %d, SIGNAL: %s, bytecount: %d", exitcode, exitsignal, bytecount); }
 	else			{ ESP_LOGI(TAG, "EXIT: %d, bytecount: %d", exitcode, bytecount); }
+	// Set bit based on exit status
+	if( (exitsignal==0) || (exitsignal==1) ){
+		xEventGroupSetBits( task_parameter->xEventGroup, SSH_CMD_SUCCESS_BIT );
+	}
 
 	libssh2_channel_free(channel);
 	channel = NULL;

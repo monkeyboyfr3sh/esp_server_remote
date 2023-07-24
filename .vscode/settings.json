@@ -57,6 +57,7 @@
         "msg_handler.h": "c",
         "periph_adc_button.h": "c",
         "set": "c",
-        "esp_peripherals.h": "c"
+        "esp_peripherals.h": "c",
+        "periph_is31fl3216.h": "c"
     }
 }

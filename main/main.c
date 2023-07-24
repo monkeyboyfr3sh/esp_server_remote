@@ -35,20 +35,11 @@
 
 static const char *TAG = "MAIN";
 
-// static void SPIFFS_Directory(char * path) {
-// 	DIR* dir = opendir(path);
-// 	assert(dir != NULL);
-// 	while (true) {
-// 		struct dirent*pe = readdir(dir);
-// 		if (!pe) break;
-// 		ESP_LOGI(__FUNCTION__,"d_name=%s d_ino=%d d_type=%x", pe->d_name,pe->d_ino, pe->d_type);
-// 	}
-// 	closedir(dir);
-// }
-
 void app_main(void)
-
 {
+
+    audio_pipeline_handle_t pipeline;
+
 	//Initialize NVS
 	esp_err_t ret = nvs_flash_init();
 	if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
@@ -65,19 +56,30 @@ void app_main(void)
     // Set to wakeup on pattern
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
+    ESP_LOGI(TAG, "[3.0] Create audio pipeline for recording");
+    audio_pipeline_cfg_t pipeline_cfg = DEFAULT_AUDIO_PIPELINE_CONFIG();
+    pipeline = audio_pipeline_init(&pipeline_cfg);
+    mem_assert(pipeline);
+
     ESP_LOGI(TAG, "[ 4 ] Initialize peripherals");
     esp_periph_config_t periph_cfg = DEFAULT_ESP_PERIPH_SET_CONFIG();
     esp_periph_set_handle_t set = esp_periph_set_init(&periph_cfg);
 
-    ESP_LOGI(TAG, "[4.1] Initialize Touch peripheral");
+    ESP_LOGI(TAG, "[4.1] Initialize keys on board");
     audio_board_key_init(set);
 
     ESP_LOGI(TAG, "[ 5 ] Set up  event listener");
     audio_event_iface_cfg_t evt_cfg = AUDIO_EVENT_IFACE_DEFAULT_CFG();
     audio_event_iface_handle_t evt = audio_event_iface_init(&evt_cfg);
 
+    ESP_LOGI(TAG, "[5.1] Listening event from the pipeline");
+    audio_pipeline_set_listener(pipeline, evt);
+
     ESP_LOGI(TAG, "[5.2] Listening event from peripherals");
     audio_event_iface_set_listener(esp_periph_set_get_event_iface(set), evt);
+
+    ESP_LOGI(TAG, "[ 6 ] Starting pipeline");
+    audio_pipeline_run(pipeline);
 
 	// Connect to wifi
 	wifi_init_sta();

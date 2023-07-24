@@ -7,6 +7,7 @@
 
 #define SSH_TASK_FINISH_BIT BIT4
 #define SSH_TASK_FAIL_BIT   BIT5
+#define SSH_CMD_SUCCESS_BIT BIT6
 
 typedef struct ssh_task_input_t {
     EventGroupHandle_t xEventGroup;
