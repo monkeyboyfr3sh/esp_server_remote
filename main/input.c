@@ -19,7 +19,7 @@
 #include "esp_err.h"
 #include "esp_log.h"
 
-#include "ssh.h"
+#include "ssh_task.h"
 #include "display_helper.h"
 
 static const char *TAG = "INPUT";

@@ -11,6 +11,15 @@
 #include "periph_button.h"
 #include "periph_adc_button.h"
 
+/**
+ * Message handler will take audio event messages 
+ * and executed correlating handlers
+ *
+ * @param msg The message to be handlled
+ *
+ * @return Execution result (PASS/FAIL)
+ *
+ */
 esp_err_t msg_handler(audio_event_iface_msg_t msg);
 
 #endif

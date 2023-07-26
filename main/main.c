@@ -28,10 +28,10 @@
 
 #include "wifi_event.h"
 #include "input.h"
-#include "ssh.h"
 
 #include "display_helper.h"
 #include "msg_handler.h"
+#include "ssh_task.h"
 
 static const char *TAG = "MAIN";
 
