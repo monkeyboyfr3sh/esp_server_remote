@@ -42,7 +42,12 @@ static void handle_vol_down_event();
 static void handle_mode_event();
 static void handle_recording_event(bool recording);
 
-
+static const char * message_ssh_commands[] = {
+    "qm list",
+    "qm start 101",
+    "qm start 105",
+    "qm stop 105; qm stop 101;",
+};
 
 esp_err_t msg_handler(audio_event_iface_msg_t msg)
 {
@@ -89,7 +94,7 @@ void handle_play_event()
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
     // Run ssh task
-    run_ssh_task_blocked("qm list");
+    run_ssh_task_blocked(message_ssh_commands[0]);
 
     // Set to wakeup on pattern
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
@@ -101,7 +106,7 @@ void handle_vol_up_event()
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
     // Run ssh task
-    run_ssh_task_blocked("qm stop 105; qm stop 101;");
+    run_ssh_task_blocked(message_ssh_commands[3]);
 
     // Set to wakeup on pattern
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
@@ -113,7 +118,7 @@ void handle_vol_down_event()
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
     // Run ssh task
-    run_ssh_task_blocked("qm start 101");
+    run_ssh_task_blocked(message_ssh_commands[1]);
 
     // Set to wakeup on pattern
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
@@ -125,7 +130,7 @@ void handle_mode_event()
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
     // Run ssh task
-    run_ssh_task_blocked("qm start 105");
+    run_ssh_task_blocked(message_ssh_commands[2]);
 
     // Set to wakeup on pattern
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
