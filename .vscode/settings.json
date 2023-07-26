@@ -61,6 +61,7 @@
         "periph_is31fl3216.h": "c",
         "cmath": "c",
         "ssh_task.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "ssh_driver.h": "c"
     }
 }
