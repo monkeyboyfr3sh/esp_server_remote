@@ -168,8 +168,8 @@ void ssh_shell_session(void *pvParameters)
 
 	// Init RX buff
     const size_t buffer_size = 4096;
-    char * rx_buff = malloc(buffer_size*sizeof(char));
 	char * tx_buff = malloc(buffer_size*sizeof(char));
+    char * rx_buff = malloc(buffer_size*sizeof(char));
 
     uart_config_t uart_config = {
         .baud_rate = 115200,
@@ -187,54 +187,60 @@ void ssh_shell_session(void *pvParameters)
 
     // Install UART driver using an event queue here we use the default queue
     uart_driver_install(UART_NUM, buffer_size, buffer_size, 128, NULL, 0);
-
+    
+	int index = 0;
+	int byte_count = 0;
 	ESP_LOGI(TAG,"Now starting shell!");
 	while(1){
 
-		// Loop and read uart until enter is pressed
-		int byte_count = 0;
-		while(1){
-			byte_count += uart_read_bytes(UART_NUM, &tx_buff[byte_count], 1, portMAX_DELAY);
-			uart_write_bytes(UART_NUM,tx_buff[byte_count-1],1);
-
-			// Detect enter press to release
-			if (tx_buff[byte_count-1] == '\n'){
-				break;
+		int len = uart_read_bytes(UART_NUM, (uint8_t*)rx_buff + index, 1, 20 / portTICK_RATE_MS);
+		if (len > 0) {
+			uart_write_bytes(UART_NUM, (uint8_t*)rx_buff + index, 1);
+			if (rx_buff[index] == '\n' || rx_buff[index] == '\r') {
+				rx_buff[index] = '\0'; // Null-terminate the string
+				uart_write_bytes(UART_NUM, (uint8_t*)(&"\r\n"), 2);
+				ESP_LOG_BUFFER_HEX(TAG,rx_buff,index);
+				byte_count = index;
+				index = 0; // Reset the buffer index
+			} else {
+				index++;
+				if (index >= buffer_size) {
+					// Buffer overflow, reset index
+					index = 0;
+				}
 			}
-
 		}
 
-		// // Read uart char into tx buff
-        // if ( byte_count > 0 ) {
+		// Execute command if byte count is set
+        if ( byte_count > 0 ) {
 
-		// 	// Set string terminator
-		// 	tx_buff[byte_count] = 0;
-
-		// 	// Print the char we're gonna send
-		// 	print_command(tx_buff);
+			// Print the char we're gonna send
+			print_command(rx_buff);
 			
-		// 	// Open SSH channel and exec command
-		// 	channel = exec_ssh_command(session, sock, tx_buff);
-		// 	if(channel == NULL ){
-		// 		ESP_LOGE(TAG,"Failed to exec ssh command!");
-		// 		ssh_task_fail(task_parameter);
-		// 	}
+			// Open SSH channel and exec command
+			channel = exec_ssh_command(session, sock, rx_buff);
+			if(channel == NULL ){
+				ESP_LOGE(TAG,"Failed to exec ssh command!");
+				ssh_task_fail(task_parameter);
+			}
 
-		// 	// Read back response TODO: Make this take a buffer
-		// 	int bytecount = read_channel(channel, session, sock, rx_buff, buffer_size);
-		// 	if(bytecount < 0 ){
-		// 		ESP_LOGE(TAG,"Failed to read channel!");
-		// 		ssh_task_fail(task_parameter);
-		// 	}
-		// 	ESP_LOGI(TAG,"SSH CHannel read:\r\n%s",rx_buff);
+			// Read back response TODO: Make this take a buffer
+			int bytecount = read_channel(channel, session, sock, rx_buff, buffer_size);
+			if(bytecount < 0 ){
+				ESP_LOGE(TAG,"Failed to read channel!");
+				ssh_task_fail(task_parameter);
+			}
+			ESP_LOGI(TAG,"SSH CHannel read:\r\n%s",rx_buff);
 
-		// 	// Clear buffers
-		// 	memset(tx_buff,0,buffer_size);
-		// 	memset(rx_buff,0,buffer_size);
-		// }
+			// Clear buffers
+			memset(tx_buff,0,buffer_size);
+			memset(rx_buff,0,buffer_size);
+			byte_count = 0;
+		}
 	}
 
-	// Release RX buff
+	// Release buffers
+    free(tx_buff);
     free(rx_buff);
 
 	// Close ssh channel
