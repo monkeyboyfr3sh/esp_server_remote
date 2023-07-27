@@ -62,6 +62,8 @@
         "cmath": "c",
         "ssh_task.h": "c",
         "time.h": "c",
-        "ssh_driver.h": "c"
+        "ssh_driver.h": "c",
+        "uart.h": "c",
+        "cstddef": "c"
     }
 }

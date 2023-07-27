@@ -91,6 +91,8 @@ void app_main(void)
     vTaskDelay(pdMS_TO_TICKS(20));
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 0);    
 
+    run_ssh_shell_session_blocked();
+
 	while (1) {
         audio_event_iface_msg_t msg;
         esp_err_t ret = audio_event_iface_listen(evt, &msg, portMAX_DELAY);

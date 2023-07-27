@@ -18,6 +18,7 @@ typedef struct ssh_task_input_t {
 esp_err_t create_ssh_task_input(ssh_task_input_t * task_parameters, char * command);
 esp_err_t delete_ssh_task_input(ssh_task_input_t * task_parameters);
 void ssh_task(void *pvParameters);
+void ssh_shell_session(void *pvParameters);
 
 /**
  * This is a helper that automates the creation of ssh task process
@@ -28,5 +29,13 @@ void ssh_task(void *pvParameters);
  *
  */
 esp_err_t run_ssh_task_blocked(char * command);
+
+/**
+ * This is a helper that automates the creation of ssh shell session
+ *
+ * @return Execution result (PASS/FAIL)
+ *
+ */
+esp_err_t run_ssh_shell_session_blocked(void);
 
 #endif
