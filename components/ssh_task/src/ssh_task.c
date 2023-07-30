@@ -357,6 +357,12 @@ esp_err_t run_ssh_shell_session_blocked(void)
 static void ssh_task_exit(ssh_task_input_t * task_parameter)
 {
 	xEventGroupSetBits( task_parameter->xEventGroup, SSH_TASK_FINISH_BIT );
+	
+	// // Dump gcov data
+	// printf("Ready to dump GCOV data...\n");
+	// esp_gcov_dump();
+	// printf("GCOV data have been dumped.\n");
+	
 	vTaskDelete( NULL );
 }
 

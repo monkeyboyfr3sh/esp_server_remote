@@ -11,3 +11,6 @@ project(esp_server_remote)
 # the generated image should be flashed when the entire project is flashed to
 # the target with 'idf.py -p PORT flash
 # spiffs_create_partition_image(storage commands FLASH_IN_PROJECT)
+
+idf_create_coverage_report(${CMAKE_CURRENT_BINARY_DIR}/coverage_report)
+idf_clean_coverage_report(${CMAKE_CURRENT_BINARY_DIR}/coverage_report)
