@@ -1,5 +1,5 @@
 
-# sdkconfig
+sdkconfig
 sdkconfig.old
 build/**
 debug.log
