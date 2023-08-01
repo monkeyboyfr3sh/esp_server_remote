@@ -90,7 +90,7 @@ void ssh_task(void *pvParameters)
 		ssh_task_fail(task_parameter);
 	}
 
-	// Read back response TODO: Make this take a buffer
+	// Read back response
     const size_t buffer_size = 4096;
     char * rx_buff = malloc(buffer_size*sizeof(char));
     int bytecount = read_channel(channel, session, sock, rx_buff, buffer_size);

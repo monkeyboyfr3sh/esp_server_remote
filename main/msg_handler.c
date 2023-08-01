@@ -42,6 +42,10 @@ static void handle_vol_down_event();
 static void handle_mode_event();
 static void handle_recording_event(bool recording);
 
+#define PLAY_CMD_INDEX          0
+#define VOLUME_DOWN_CMD_INDEX   1
+#define MODE_CMD_INDEX          2
+#define VOLUME_UP_CMD_INDEX     3
 static const char * message_ssh_commands[] = {
     "qm list",
     "qm start 101",
@@ -94,7 +98,11 @@ void handle_play_event()
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
     // Run ssh task
-    run_ssh_task_blocked(message_ssh_commands[0]);
+    // run_ssh_task_blocked(message_ssh_commands[PLAY_CMD_INDEX]);
+    for(int i = 0;i<10;i++){
+        ESP_LOGI(TAG,"Play event!");
+        vTaskDelay(pdMS_TO_TICKS(50));
+    }
 
     // Set to wakeup on pattern
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
@@ -106,7 +114,7 @@ void handle_vol_up_event()
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
     // Run ssh task
-    run_ssh_task_blocked(message_ssh_commands[3]);
+    run_ssh_task_blocked(message_ssh_commands[VOLUME_UP_CMD_INDEX]);
 
     // Set to wakeup on pattern
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
@@ -118,7 +126,7 @@ void handle_vol_down_event()
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
     // Run ssh task
-    run_ssh_task_blocked(message_ssh_commands[1]);
+    run_ssh_task_blocked(message_ssh_commands[VOLUME_DOWN_CMD_INDEX]);
 
     // Set to wakeup on pattern
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
@@ -130,7 +138,7 @@ void handle_mode_event()
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_ON, 100);
 
     // Run ssh task
-    run_ssh_task_blocked(message_ssh_commands[2]);
+    run_ssh_task_blocked(message_ssh_commands[MODE_CMD_INDEX]);
 
     // Set to wakeup on pattern
     display_service_set_pattern((void *)led_periph, DISPLAY_PATTERN_WAKEUP_FINISHED, 100);
