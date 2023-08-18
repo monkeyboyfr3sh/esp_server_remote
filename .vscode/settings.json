@@ -3,6 +3,7 @@
     "idf.adapterTargetName": "esp32",
     "files.associations": {
         "*.txt": "cmake",
-        "fcntl.h": "c"
+        "fcntl.h": "c",
+        "esp_wifi.h": "c"
     }
 }
